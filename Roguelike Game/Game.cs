@@ -1,5 +1,6 @@
 ﻿using RLNET;
 using Roguelike_Game.Core;
+using Roguelike_Game.Systems;
 
 namespace Roguelike_Game
 {
@@ -30,6 +31,9 @@ namespace Roguelike_Game
         private static readonly int _inventoryHeight = 11;
         private static RLConsole _inventoryConsole;
 
+        //Adding the Dungeon Map class 
+        public static DungeonMap DungeonMap { get; private set; }
+
         public static void Main()
         {
             // This must be the exact name of the bitmap font file we are using or it will error.
@@ -38,6 +42,10 @@ namespace Roguelike_Game
             string consoleTitle = "Roguelike Game - Level 1";
             // Tell RLNet to use the bitmap font that we specified and that each tile is 8 x 8 pixels
             _rootConsole = new RLRootConsole(fontFileName, _screenWidth, _screenHeight, 8, 8, 1f, consoleTitle);
+
+            //Calling MapGenerator 
+            MapGenerator mapGenerator = new MapGenerator(_mapWidth, _mapHeight);
+            DungeonMap = mapGenerator.CreateMap();
 
             // Initialize the sub consoles that we will Blit to the root console
             _mapConsole = new RLConsole(_mapWidth, _mapHeight);
@@ -58,7 +66,7 @@ namespace Roguelike_Game
         {
             // Set background color and text for each console 
             // so that we can verify they are in the correct positions
-            _mapConsole.SetBackColor(0, 0, _mapWidth, _mapHeight, Color.FloorBackground);
+            _mapConsole.SetBackColor(0, 0, _mapWidth, _mapHeight, Colors.FloorBackground);
             _mapConsole.Print(1, 1, "Map", RLColor.White);
 
             _messageConsole.SetBackColor(0, 0, _messageWidth, _messageHeight, Swatch.DbDeepWater);
@@ -82,6 +90,7 @@ namespace Roguelike_Game
 
             // Tell RLNET to draw the console that we set
             _rootConsole.Draw();
+            DungeonMap.Draw(_mapConsole);
         }
     }
 }
