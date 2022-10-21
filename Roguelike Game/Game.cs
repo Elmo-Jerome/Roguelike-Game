@@ -33,6 +33,7 @@ namespace Roguelike_Game
 
         //Adding the Dungeon Map class 
         public static DungeonMap DungeonMap { get; private set; }
+        public static Player Player { get; private set; }
 
         public static void Main()
         {
@@ -43,9 +44,13 @@ namespace Roguelike_Game
             // Tell RLNet to use the bitmap font that we specified and that each tile is 8 x 8 pixels
             _rootConsole = new RLRootConsole(fontFileName, _screenWidth, _screenHeight, 8, 8, 1f, consoleTitle);
 
+            Player = new Player();
             //Calling MapGenerator 
             MapGenerator mapGenerator = new MapGenerator(_mapWidth, _mapHeight);
             DungeonMap = mapGenerator.CreateMap();
+
+            DungeonMap.UpdatePlayerFieldOfView();
+
 
             // Initialize the sub consoles that we will Blit to the root console
             _mapConsole = new RLConsole(_mapWidth, _mapHeight);
@@ -59,6 +64,8 @@ namespace Roguelike_Game
             _rootConsole.Render += OnRootConsoleRender;
             // Begin RLNET's game loop
             _rootConsole.Run();
+
+
         }
 
         // Event handler for RLNET's Update event
@@ -91,6 +98,8 @@ namespace Roguelike_Game
             // Tell RLNET to draw the console that we set
             _rootConsole.Draw();
             DungeonMap.Draw(_mapConsole);
+
+            Player.Draw(_mapConsole, DungeonMap);
         }
     }
 }
