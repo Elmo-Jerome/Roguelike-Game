@@ -52,9 +52,15 @@ namespace Roguelike_Game
             //Calling MapGenerator 
             MapGenerator mapGenerator = new MapGenerator(_mapWidth, _mapHeight);
             DungeonMap = mapGenerator.CreateMap();
-
             DungeonMap.UpdatePlayerFieldOfView();
 
+            //instantiate CommandSystem method
+            CommandSystem = new CommandSystem();
+
+            // Set up a handler for RLNET's Update event
+            _rootConsole.Update += OnRootConsoleUpdate;
+            // Set up a handler for RLNET's Render event
+            _rootConsole.Render += OnRootConsoleRender;
 
             // Initialize the sub consoles that we will Blit to the root console
             _mapConsole = new RLConsole(_mapWidth, _mapHeight);
@@ -76,15 +82,9 @@ namespace Roguelike_Game
             _inventoryConsole.SetBackColor(0, 0, _inventoryWidth, _inventoryHeight, Swatch.DbWood);
             _inventoryConsole.Print(1, 1, "Inventory", RLColor.White);
 
-            // Set up a handler for RLNET's Update event
-            _rootConsole.Update += OnRootConsoleUpdate;
-            // Set up a handler for RLNET's Render event
-            _rootConsole.Render += OnRootConsoleRender;
             // Begin RLNET's game loop
             _rootConsole.Run();
 
-            //instantiate CommandSystem method
-            CommandSystem = new CommandSystem();
 
         }
 
@@ -96,19 +96,19 @@ namespace Roguelike_Game
 
             if (keyPress != null)
             {
-                if (keyPress.Key == RLKey.Up)
+                if (keyPress.Key == RLKey.Up || keyPress.Key == RLKey.W)
                 {
                     didPlayerAct = CommandSystem.MovePlayer(Direction.Up);
                 }
-                else if (keyPress.Key == RLKey.Down)
+                else if (keyPress.Key == RLKey.Down || keyPress.Key == RLKey.S)
                 {
                     didPlayerAct = CommandSystem.MovePlayer(Direction.Down);
                 }
-                else if (keyPress.Key == RLKey.Left)
+                else if (keyPress.Key == RLKey.Left || keyPress.Key == RLKey.A)
                 {
                     didPlayerAct = CommandSystem.MovePlayer(Direction.Left);
                 }
-                else if (keyPress.Key == RLKey.Right)
+                else if (keyPress.Key == RLKey.Right || keyPress.Key == RLKey.D)
                 {
                     didPlayerAct = CommandSystem.MovePlayer(Direction.Right);
                 }
@@ -129,16 +129,16 @@ namespace Roguelike_Game
         {
             if (_renderRequired)
             {
+                DungeonMap.Draw(_mapConsole);
+                Player.Draw(_mapConsole, DungeonMap);
+
                 RLConsole.Blit(_mapConsole, 0, 0, _mapWidth, _mapHeight, _rootConsole, 0, _inventoryHeight);
                 RLConsole.Blit(_statConsole, 0, 0, _statWidth, _statHeight, _rootConsole, _mapWidth, 0);
                 RLConsole.Blit(_messageConsole, 0, 0, _messageWidth, _messageHeight, _rootConsole, 0, _screenHeight - _messageHeight);
-                RLConsole.Blit(_inventoryConsole, 0, 0, _inventoryWidth, _inventoryHeight,_rootConsole, 0, 0);
+                RLConsole.Blit(_inventoryConsole, 0, 0, _inventoryWidth, _inventoryHeight, _rootConsole, 0, 0);
 
                 // Tell RLNET to draw the console that we set
                 _rootConsole.Draw();
-                DungeonMap.Draw(_mapConsole);
-
-                Player.Draw(_mapConsole, DungeonMap);
 
                 _renderRequired = false;
             }
