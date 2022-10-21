@@ -66,5 +66,34 @@ namespace Roguelike_Game.Core
                 }
             }
         }
+
+        public bool SetActorPosition(Actor actor, int x, int y)
+        {
+            // Only allow actor placement if the cell is walkable
+            if (GetCell(x, y).IsWalkable)
+            {
+                // The cell the actor was previously on is now walkable
+                SetIsWalkable(actor.X, actor.Y, true);
+                // Update the actor's position
+                actor.X = x;
+                actor.Y = y;
+                // The new cell the actor is on is now not walkable
+                SetIsWalkable(actor.X, actor.Y, false);
+                // Don't forget to update the field of view if we just repositioned the player
+                if (actor is Player)
+                {
+                    UpdatePlayerFieldOfView();
+                }
+                return true;
+            }
+            return false;
+        }
+
+        // A helper method for setting the IsWalkable property on a Cell
+        public void SetIsWalkable(int x, int y, bool isWalkable)
+        {
+            Cell cell = (Cell)GetCell(x, y);
+            SetCellProperties(cell.X, cell.Y, cell.IsTransparent, isWalkable, cell.IsExplored);
+        }
     }
 }
