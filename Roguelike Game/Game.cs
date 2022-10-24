@@ -35,7 +35,7 @@ namespace Roguelike_Game
 
         //Adding the Dungeon Map class 
         public static DungeonMap DungeonMap { get; private set; }
-        public static Player Player { get; private set; }
+        public static Player Player { get; set; }
 
         //Player movement direction
         private static bool _renderRequired = true;
@@ -54,7 +54,6 @@ namespace Roguelike_Game
             // Tell RLNet to use the bitmap font that we specified and that each tile is 8 x 8 pixels
             _rootConsole = new RLRootConsole(fontFileName, _screenWidth, _screenHeight, 8, 8, 1f, consoleTitle);
 
-            Player = new Player();
             //Calling MapGenerator 
             MapGenerator mapGenerator = new MapGenerator(_mapWidth, _mapHeight, 20, 13, 7);
             DungeonMap = mapGenerator.CreateMap();

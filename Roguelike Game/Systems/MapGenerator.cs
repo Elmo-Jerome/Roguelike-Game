@@ -61,6 +61,8 @@ namespace Roguelike_Game.Systems
                 CreateRoom(room);
             }
 
+            PlacePlayer();
+
             return _map;
         }
 
@@ -73,6 +75,21 @@ namespace Roguelike_Game.Systems
                     _map.SetCellProperties(x, y, true, true, true);
                 }
             }
+        }
+
+        // Find the center of the first room that we created and place the Player there
+        private void PlacePlayer()
+        {
+            Player player = Game.Player;
+            if (player == null)
+            {
+                player = new Player();
+            }
+
+            player.X = _map.Rooms[0].Center.X;
+            player.Y = _map.Rooms[0].Center.Y;
+
+            _map.AddPlayer(player);
         }
     }
 }
