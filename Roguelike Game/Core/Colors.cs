@@ -19,5 +19,7 @@ namespace Roguelike_Game.Core
         public static RLColor TextHeading = RLColor.White;
         public static RLColor Text = Swatch.DbLight;
         public static RLColor Gold = Swatch.DbSun;
+
+        public static RLColor KoboldColor = Swatch.DbBrightWood;
     }
 }

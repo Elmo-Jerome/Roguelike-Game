@@ -1,5 +1,7 @@
 ﻿using Roguelike_Game.Core;
+using Roguelike_Game.Monsters;
 using RogueSharp;
+using RogueSharp.DiceNotation;
 using System;
 using System.Linq;
 
@@ -85,6 +87,7 @@ namespace Roguelike_Game.Systems
             }
 
             PlacePlayer();
+            PlaceMonsters();
 
             return _map;
 
@@ -132,6 +135,34 @@ namespace Roguelike_Game.Systems
             for (int y = Math.Min(yStart, yEnd); y <= Math.Max(yStart, yEnd); y++)
             {
                 _map.SetCellProperties(xPosition, y, true, true);
+            }
+        }
+
+        private void PlaceMonsters()
+        {
+            foreach (var room in _map.Rooms)
+            {
+                // Each room has a 60% chance of having monsters
+                if (Dice.Roll("1D10") < 7)
+                {
+                    // Generate between 1 and 4 monsters
+                    var numberOfMonsters = Dice.Roll("1D4");
+                    for (int i = 0; i < numberOfMonsters; i++)
+                    {
+                        // Find a random walkable location in the room to place the monster
+                        Point randomRoomLocation = (Point)_map.GetRandomWalkableLocationInRoom(room);
+                        // It's possible that the room doesn't have space to place a monster
+                        // In that case skip creating the monster
+                        if (randomRoomLocation != null)
+                        {
+                            // Temporarily hard code this monster to be created at level 1
+                            var monster = Kobold.Create(1);
+                            monster.X = randomRoomLocation.X;
+                            monster.Y = randomRoomLocation.Y;
+                            _map.AddMonster(monster);
+                        }
+                    }
+                }
             }
         }
     }
