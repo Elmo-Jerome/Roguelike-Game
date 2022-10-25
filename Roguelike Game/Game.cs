@@ -38,9 +38,6 @@ namespace Roguelike_Game
         public static Player Player { get; set; }
         public static MessageLog MessageLog { get; private set; }
 
-        //Temporary
-        private static int _steps = 0;
-
         //Player movement direction
         private static bool _renderRequired = true;
         public static CommandSystem CommandSystem { get; private set; }
@@ -87,9 +84,6 @@ namespace Roguelike_Game
             MessageLog.Add("The rogue arrives on level 1");
             MessageLog.Add($"Level created with seed '{seed}'");
 
-            _statConsole.SetBackColor(0, 0, _statWidth, _statHeight, Swatch.DbOldStone);
-            _statConsole.Print(1, 1, "Stats", RLColor.White);
-
             _inventoryConsole.SetBackColor(0, 0, _inventoryWidth, _inventoryHeight, Swatch.DbWood);
             _inventoryConsole.Print(1, 1, "Inventory", RLColor.White);
 
@@ -131,7 +125,6 @@ namespace Roguelike_Game
 
             if (didPlayerAct)
             {
-                MessageLog.Add($"Step # {++_steps}");
                 _renderRequired = true;
             }
         }
@@ -143,6 +136,7 @@ namespace Roguelike_Game
             {
                 DungeonMap.Draw(_mapConsole);
                 Player.Draw(_mapConsole, DungeonMap);
+                Player.DrawStats(_statConsole);
                 MessageLog.Draw(_messageConsole);
 
                 RLConsole.Blit(_mapConsole, 0, 0, _mapWidth, _mapHeight, _rootConsole, 0, _inventoryHeight);
