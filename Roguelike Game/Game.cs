@@ -36,6 +36,10 @@ namespace Roguelike_Game
         //Adding the Dungeon Map class 
         public static DungeonMap DungeonMap { get; private set; }
         public static Player Player { get; set; }
+        public static MessageLog MessageLog { get; private set; }
+
+        //Temporary
+        private static int _steps = 0;
 
         //Player movement direction
         private static bool _renderRequired = true;
@@ -78,8 +82,10 @@ namespace Roguelike_Game
             _mapConsole.SetBackColor(0, 0, _mapWidth, _mapHeight, Colors.FloorBackground);
             //mapConsole.Print(1, 1, "Map", RLColor.White);
 
-            _messageConsole.SetBackColor(0, 0, _messageWidth, _messageHeight, Swatch.DbDeepWater);
-            _messageConsole.Print(1, 1, "Messages", RLColor.White);
+            // Create a new MessageLog and print the random seed used to generate the level
+            MessageLog = new MessageLog();
+            MessageLog.Add("The rogue arrives on level 1");
+            MessageLog.Add($"Level created with seed '{seed}'");
 
             _statConsole.SetBackColor(0, 0, _statWidth, _statHeight, Swatch.DbOldStone);
             _statConsole.Print(1, 1, "Stats", RLColor.White);
@@ -125,6 +131,7 @@ namespace Roguelike_Game
 
             if (didPlayerAct)
             {
+                MessageLog.Add($"Step # {++_steps}");
                 _renderRequired = true;
             }
         }
@@ -136,6 +143,7 @@ namespace Roguelike_Game
             {
                 DungeonMap.Draw(_mapConsole);
                 Player.Draw(_mapConsole, DungeonMap);
+                MessageLog.Draw(_messageConsole);
 
                 RLConsole.Blit(_mapConsole, 0, 0, _mapWidth, _mapHeight, _rootConsole, 0, _inventoryHeight);
                 RLConsole.Blit(_statConsole, 0, 0, _statWidth, _statHeight, _rootConsole, _mapWidth, 0);
